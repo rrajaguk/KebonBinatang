@@ -15,9 +15,10 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 
+import GUI.MainWindow;
 import Keeper.ZooKeeperConnection;
 
-public class LockCommandProcessor  implements SelectionListener, ChildrenCallback, Watcher {
+public class LockHerdCommandProcessor  implements SelectionListener, ChildrenCallback, Watcher {
 
 	private Button CurrentButton;
 	private ZooKeeperConnection conn;
@@ -26,9 +27,11 @@ public class LockCommandProcessor  implements SelectionListener, ChildrenCallbac
 	public final String LOCK_PREFIX = "Lock-";
 	private String curNodeName;
 	private ZooKeeper zk2 ;
-	public LockCommandProcessor(Button btn){
+	private MainWindow parent;
+	public LockHerdCommandProcessor(Button btn, MainWindow _parent){
 		CurrentButton= btn;
 		isNodeCreated = false;
+		parent = _parent;
 	}
 	@Override
 	public void widgetSelected(SelectionEvent e) {
@@ -143,8 +146,9 @@ public class LockCommandProcessor  implements SelectionListener, ChildrenCallbac
 	}
 	@Override
 	public void process(WatchedEvent event) {
-		// TODO Auto-generated method stub
+		parent.incrementHerdCounter();
 		if (event.getType() == EventType.NodeChildrenChanged ){
+			// process the change on child node
 			zk2.getChildren("/", true, this, null);
 		}
 	}
